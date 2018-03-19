@@ -36,22 +36,22 @@ form = """
 </html>
 """
 
+@app.route('/')
+def main():
+    return form
+
 @app.route('/', methods=['POST'])
 def encrypt():
-    mess = text
-    cyp = int(rot)
+    mess = request.form['text']
+    cyp = int(request.form['rot'])
 
     encrypted = rotate_string(mess, cyp)
 
     encryptedReturn = """
     <h1>{encrypted}</h1>
     """.format(encrypted=encrypted)
-    
-    return encryptedReturn
 
-@app.route('/')
-def main():
-    return form
+    return encryptedReturn
 
 if __name__ == "__main__":
     app.run()
