@@ -1,57 +1,36 @@
-from flask import Flask, request
-from caesar import rotate_string
+from flask import Flask, request, render_template, redirect
+from caesar import rotate_string, encrypt
+import os
+import string
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
-form = """
-<!DOCTYPE html>
-
-<html>
-    <head>
-        <style>
-            form {{
-                background-color: #eee;
-                padding: 20px;
-                margin: 0 auto;
-                width: 540px;
-                font: 16px sans-serif;
-                border-radius: 10px;
-            }}
-            textarea {{
-                margin: 10px 0;
-                width: 540px;
-                height: 120px;
-            }}
-        </style>
-    </head>
-    <body>
-      <form method="post">
-         Rotate by:
-         <input type="text" name="rot" value="0" />
-         <textarea name="text">{0}</textarea>
-         <input type="submit" />
-       </form>  
-    </body>
-</html>
-"""
-
 @app.route('/')
 def main():
-    return form.format('','')
+    return render_template('base.html', spot='')
 
 @app.route('/', methods=['POST'])
 def encrypt():
     mess = request.form['text']
-    cyp = int(request.form['rot'])
 
-    encrypted = rotate_string(mess, cyp)
+    for char in request.form['rot']:
+        is_digit = False
+        if char in string.digits:
+            is_digit = True 
+        else:
+            is_digit = False
+        cyp = int(request.form['rot'])
 
-#    encryptedReturn = """
-#    <h1>{encrypted}</h1>
-#    """.format(encrypted=encrypted)
-
-    return form.format(encrypted)
+    if is_digit == True:
+        cyp = int(request.form['rot'])
+        encrypted = rotate_string(mess, cyp)
+        return render_template('base.html', spot=encrypted) 
+    elif is_digit == False:
+        encrypted = encrypt(mess, cyp)
+        return render_template('base.html', spot=encrypted)
+    else:
+        return render_template('base.html', spot=encrypted)
 
 if __name__ == "__main__":
     app.run()

@@ -18,6 +18,31 @@ def rotate_string_13(text):
 
     return rotated
 
+def encrypt(text, key):
+    message = ''
+    index = 0
+
+    # iterates through message
+    for character in text:
+        # filters alphas for floppydoodling
+        if character.isalpha():
+            # if index for keyword is longer
+            # than keyword, reset to starting index
+            if index > len(key) - 1:
+                index = 0
+                # gets alpha of key letter
+                keylet = alphabet_position(key[(index)])
+            else:  # cycles through rest of keyword
+                keylet = alphabet_position(key[index])
+            # key letter value passed as rot value to next func.
+            message = message + rotate_character(character, keylet)
+            # steps index value for next cycle
+            index += 1
+        else:
+            # not alpha. not my problem.
+            message = message + character
+    # returns the allsparking secret
+    return message
 
 def rotate_character(char, rot):
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
